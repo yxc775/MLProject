@@ -6,7 +6,7 @@ from keras.layers import ReLU
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.layers import Dense
-from keras.optimizers import SGD
+from keras.optimizers import Adam
 import numpy as np
 import numpy.random as rd
 from matplotlib import pyplot
@@ -42,7 +42,7 @@ def define_model(in_shape=(28,28,1)):
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
     # compile model
-    opt = SGD(lr=0.0002, momentum=0.005)
+    opt = Adam(lr=0.0002, beta_1=0.05)
     model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
     return model
 
@@ -94,6 +94,7 @@ def train_discriminator_model(model,dataset,n_iter=100,n_batch=256):
 
 
 if __name__ == '__main__':
+    # define model
     model = define_model()
-    dataset = load_minist()
-    train_discriminator_model(model,dataset)
+    # summarize the model
+    model.summary()

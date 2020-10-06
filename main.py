@@ -6,7 +6,6 @@ from numpy import vstack
 from matplotlib import pyplot
 from numpy.random import rand
 
-from keras.utils.vis_utils import plot_model
 
 
 # generate points in latent space as input for the generator

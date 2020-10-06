@@ -18,12 +18,10 @@ def define_model(dim):
     model.add(Dense(n_nodes, input_dim=dim))
     model.add(ReLU())
     model.add(Reshape((7, 7, 128)))
-    model.add(Conv2DTranspose(128, (2, 2), strides=(1, 1), padding='same'))
-    model.add(ReLU())
-    model.add(Conv2DTranspose(128, (3, 3), strides=(2, 2), padding='same'))
+    model.add(Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same'))
     model.add(ReLU())
     # upsample to 28x28
-    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same'))
+    model.add(Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same'))
     model.add(ReLU())
     model.add(Conv2D(1, (7, 7), activation='sigmoid', padding='same'))
     return model
