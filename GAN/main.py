@@ -5,14 +5,13 @@ from matplotlib import pyplot
 from numpy.random import rand
 
 
-
 # generate points in latent space as input for the generator
 def generate_latent_points(latent_dim, n_samples):
-	# generate points in the latent space
-	x_input = rand(latent_dim * n_samples)
-	# reshape into a batch of inputs for the network
-	x_input = x_input.reshape(n_samples, latent_dim)
-	return x_input
+    # generate points in the latent space
+    x_input = rand(latent_dim * n_samples)
+    # reshape into a batch of inputs for the network
+    x_input = x_input.reshape(n_samples, latent_dim)
+    return x_input
 
 
 # create and save a plot of generated images (reversed grayscale)
@@ -79,7 +78,6 @@ def train(g_model, d_model, gan_model, dataset, latent_dim, n_epochs=100, n_batc
             summarize_performance(i, g_model, d_model, dataset, latent_dim)
 
 
-
 if __name__ == '__main__':
     # size of the latent space
     latent_dim = 100
@@ -93,4 +91,3 @@ if __name__ == '__main__':
     dataset = discriminator.load_minist()
     # train model
     train(g_model, d_model, gan_model, dataset, latent_dim)
-
