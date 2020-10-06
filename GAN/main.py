@@ -1,6 +1,4 @@
-import discriminator
-import generator
-import ganmodel
+from GAN import ganmodel, generator, discriminator
 from numpy import ones
 from numpy import vstack
 from matplotlib import pyplot

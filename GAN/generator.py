@@ -48,20 +48,8 @@ def generate_fake_samples(g_model, latent_dim, n_samples):
 
 
 if __name__ == '__main__':
-    # size of the latent space
-    latent_dim = 100
-    # define the discriminator model
-    model = define_model(latent_dim)
-    # generate samples
-    n_samples = 25
-    X, _ = generate_fake_samples(model, latent_dim, n_samples)
-    # plot the generated samples
-    for i in range(n_samples):
-        # define subplot
-        pyplot.subplot(5, 5, 1 + i)
-        # turn off axis labels
-        pyplot.axis('off')
-        # plot single image
-        pyplot.imshow(X[i, :, :, 0], cmap='gray_r')
-    # show the figure
-    pyplot.show()
+    # define model
+    model = define_model(100)
+    # summarize the model
+    model.summary()
+
