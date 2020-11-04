@@ -34,7 +34,10 @@ def decode(latent_dim=2):
     x = layers.Reshape((7, 7, 128))(x)
     x = layers.Conv2DTranspose(128, 4, activation="relu", strides=2, padding="same")(x)
     x = layers.Conv2DTranspose(128, 4, activation="relu", strides=2, padding="same")(x)
-    decoder_outputs = layers.Conv2DTranspose(1, 3, activation="sigmoid", padding="same")(x)
+    decoder_outputs = layers.Conv2DTranspose(1, 4, activation="sigmoid", padding="same")(x)
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
     decoder.summary()
     return decoder
+
+
+
