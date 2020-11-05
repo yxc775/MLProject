@@ -6,24 +6,31 @@ from keras.layers import Dense
 from keras.layers import Reshape
 from keras.layers import Conv2D
 from keras.layers import Conv2DTranspose
-from keras.layers import ReLU
+from keras.layers import LeakyReLU
+from keras.layers import BatchNormalization
+from keras.initializers import  RandomNormal
 from matplotlib import pyplot
 
 
 # define the standalone generator model
 def define_model(dim):
+    init = RandomNormal(stddev=0.02)
     model = Sequential()
     # foundation for 7x7 image
     n_nodes = 128 * 7 * 7
-    model.add(Dense(n_nodes, input_dim=dim))
-    model.add(ReLU())
+    model.add(Dense(n_nodes,kernel_initializer=init, input_dim=dim))
+    model.add(LeakyReLU(alpha = 0.2))
     model.add(Reshape((7, 7, 128)))
-    model.add(Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same'))
-    model.add(ReLU())
+    # upsample to 14x14
+    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same',kernel_initializer=init))
+    model.add(BatchNormalization())
+    model.add(LeakyReLU(alpha = 0.2))
     # upsample to 28x28
-    model.add(Conv2DTranspose(128, (5, 5), strides=(2, 2), padding='same'))
-    model.add(ReLU())
-    model.add(Conv2D(1, (7, 7), activation='sigmoid', padding='same'))
+    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same',kernel_initializer=init))
+    model.add(BatchNormalization())
+    model.add(LeakyReLU(alpha = 0.2))
+    #out 28x28x1
+    model.add(Conv2D(1, (7, 7), activation='tanh', padding='same',kernel_initializer=init))
     return model
 
 

@@ -2,10 +2,12 @@
 from keras.datasets.mnist import load_data
 from keras.models import Sequential
 from keras.layers import Conv2D
-from keras.layers import ReLU
+from keras.layers import LeakyReLU
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.layers import Dense
+from keras.layers import BatchNormalization
+from keras.initializers import  RandomNormal
 from keras.optimizers import Adam
 import numpy as np
 import numpy.random as rd
@@ -29,13 +31,16 @@ def showMinist():
 
 
 def define_model(in_shape=(28,28,1)):
+    init = RandomNormal(stddev=0.02)
     model = Sequential()
-    model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same', input_shape=in_shape))
-    model.add(ReLU())
-    model.add(Dropout(0.4))
-    model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same'))
-    model.add(ReLU())
-    model.add(Dropout(0.4))
+    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same',kernel_initializer=init, input_shape=in_shape))
+    model.add(BatchNormalization())
+    model.add(LeakyReLU(alpha = 0.2))
+    model.add(Dropout(0.5))
+    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same',kernel_initializer=init))
+    model.add(BatchNormalization())
+    model.add(LeakyReLU(alpha = 0.2))
+    model.add(Dropout(0.5))
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
     # compile model
