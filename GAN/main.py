@@ -62,9 +62,10 @@ def train(g_model, d_model, gan_model, dataset, latent_dim, n_epochs=100, n_batc
             # generate 'fake' examples
             X_fake, y_fake = generator.generate_fake_samples(g_model, latent_dim, half_batch)
             # create training set for the discriminator
-            X, y = vstack((X_real, X_fake)), vstack((y_real, y_fake))
-            # update discriminator model weights
-            d_loss, _ = d_model.train_on_batch(X, y)
+            # update discriminator model weights using real
+            d_loss_real, _ = d_model.train_on_batch(X_real, y_real)
+            # update discriminator model weights using fake
+            d_loss_fake, _ = d_model.train_on_batch(X_fake, y_fake)
             # prepare points in latent space as input for the generator
             X_gan = generate_latent_points(latent_dim, n_batch)
             # create inverted labels for the fake samples
@@ -72,7 +73,7 @@ def train(g_model, d_model, gan_model, dataset, latent_dim, n_epochs=100, n_batc
             # update the generator via the discriminator's error
             g_loss = gan_model.train_on_batch(X_gan, y_gan)
             # summarize loss on this batch
-            print('>%d, %d/%d, d=%.3f, g=%.3f' % (i + 1, j + 1, bat_per_epo, d_loss, g_loss))
+            print('>%d, %d/%d, d_r=%.3f, d_f=%.3f, g=%.3f' % (i + 1, j + 1, bat_per_epo, d_loss_real,d_loss_fake, g_loss))
         # evaluate the model performance, sometimes
         if (i + 1) % 10 == 0:
             summarize_performance(i, g_model, d_model, dataset, latent_dim)

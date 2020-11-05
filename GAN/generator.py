@@ -14,23 +14,20 @@ from matplotlib import pyplot
 
 # define the standalone generator model
 def define_model(dim):
-    init = RandomNormal(stddev=0.02)
     model = Sequential()
     # foundation for 7x7 image
     n_nodes = 128 * 7 * 7
-    model.add(Dense(n_nodes,kernel_initializer=init, input_dim=dim))
+    model.add(Dense(n_nodes, input_dim=dim))
     model.add(LeakyReLU(alpha = 0.2))
     model.add(Reshape((7, 7, 128)))
     # upsample to 14x14
-    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same',kernel_initializer=init))
-    model.add(BatchNormalization())
+    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same'))
     model.add(LeakyReLU(alpha = 0.2))
     # upsample to 28x28
-    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same',kernel_initializer=init))
-    model.add(BatchNormalization())
+    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same'))
     model.add(LeakyReLU(alpha = 0.2))
     #out 28x28x1
-    model.add(Conv2D(1, (7, 7), activation='tanh', padding='same',kernel_initializer=init))
+    model.add(Conv2D(1, (7, 7), activation='sigmoid', padding='same'))
     return model
 
 
@@ -51,7 +48,12 @@ def generate_fake_samples(g_model, latent_dim, n_samples):
     X = g_model.predict(x_input)
     # create 'fake' class labels (0)
     y = zeros((n_samples, 1))
+    y = smooth(y)
     return X, y
+
+def smooth(y):
+    #desentized training if loss too small, smooth to [0.1]
+    return y+0.05
 
 
 if __name__ == '__main__':

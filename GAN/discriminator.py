@@ -11,6 +11,7 @@ from keras.initializers import  RandomNormal
 from keras.optimizers import Adam
 import numpy as np
 import numpy.random as rd
+import random
 from matplotlib import pyplot
 
 
@@ -31,16 +32,13 @@ def showMinist():
 
 
 def define_model(in_shape=(28,28,1)):
-    init = RandomNormal(stddev=0.02)
     model = Sequential()
-    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same',kernel_initializer=init, input_shape=in_shape))
-    model.add(BatchNormalization())
+    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same', input_shape=in_shape))
     model.add(LeakyReLU(alpha = 0.2))
-    model.add(Dropout(0.5))
-    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same',kernel_initializer=init))
-    model.add(BatchNormalization())
+    model.add(Dropout(0.4))
+    model.add(Conv2D(64, (3, 3), strides=(2, 2), padding='same'))
     model.add(LeakyReLU(alpha = 0.2))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.4))
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
     # compile model
@@ -55,8 +53,7 @@ def load_minist():
     X = np.expand_dims(trainX, axis=-1)
     # convert from unsigned ints to floats
     X = X.astype('float32')
-    # scale from [0,255] to [0,1]
-    X = X / 255.0
+    X = X/255
     return X
 
 
@@ -66,7 +63,12 @@ def pick_real_sample(dataset, n):
     X = dataset[ix]
     # generate 'real' class labels (1)
     y = np.ones((n, 1))
+    y = smooth(y)
     return X, y
+
+def smooth(y):
+    #desentized training if loss too small, smooth to [0.95]
+    return y - 0.05;
 
 
 def create_fake_sample(n):
