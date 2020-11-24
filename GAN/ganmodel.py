@@ -8,7 +8,7 @@ def define_gan(g_model, d_model):
     model = Sequential()
     model.add(g_model)
     model.add(d_model)
-    opt = Adam(lr=0.0002,beta_1=0.4)
+    opt = Adam(lr=0.0002,beta_1=0.5)
     model.compile(loss='binary_crossentropy',optimizer=opt)
     return model
 

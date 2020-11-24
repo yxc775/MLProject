@@ -48,12 +48,8 @@ def generate_fake_samples(g_model, latent_dim, n_samples):
     X = g_model.predict(x_input)
     # create 'fake' class labels (0)
     y = zeros((n_samples, 1))
-    y = smooth(y)
     return X, y
 
-def smooth(y):
-    #desentized training if loss too small, smooth to [0.1]
-    return y+0.05
 
 
 if __name__ == '__main__':
