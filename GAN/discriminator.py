@@ -8,7 +8,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.layers import BatchNormalization
 from keras.initializers import RandomNormal
-from keras.optimizers import Adam
+from keras.optimizers import RMSprop
 import numpy as np
 import numpy.random as rd
 import random
@@ -33,16 +33,26 @@ def showMinist():
 
 def define_model(in_shape=(28, 28, 1)):
 	model = Sequential()
-	model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same', input_shape=in_shape))
+	model.add(Conv2D(64,5, strides=2, padding='same', input_shape=in_shape))
 	model.add(LeakyReLU(alpha=0.2))
-	model.add(Dropout(0.2))
-	model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same'))
+	model.add(Dropout(0.4))
+
+	model.add(Conv2D(128,5, strides=2, padding='same'))
 	model.add(LeakyReLU(alpha=0.2))
-	model.add(Dropout(0.2))
+	model.add(Dropout(0.4))
+
+	model.add(Conv2D(256,5, strides=2, padding='same'))
+	model.add(LeakyReLU(alpha=0.2))
+	model.add(Dropout(0.4))
+
+	model.add(Conv2D(512,5, strides=1, padding='same'))
+	model.add(LeakyReLU(alpha=0.2))
+	model.add(Dropout(0.4))
+
 	model.add(Flatten())
 	model.add(Dense(1, activation='sigmoid'))
 	# compile model
-	opt = Adam(lr=0.0002, beta_1=0.5)
+	opt = RMSprop(lr=0.0002, decay=6e-8)
 	model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 	return model
 
@@ -50,8 +60,9 @@ def define_model(in_shape=(28, 28, 1)):
 def load_minist():
 	(trainX, trainy), (_, _) = load_data()
 	# expand to 3d, e.g. add channels dimension
-	selected_ix = trainy == 8
-	X = trainX[selected_ix]
+
+	#selected_ix = trainy == 8
+	#X = trainX[selected_ix]
 	X = np.expand_dims(trainX, axis=-1)
 	# convert from unsigned ints to floats
 	X = X.astype('float32')

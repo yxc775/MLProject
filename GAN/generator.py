@@ -6,8 +6,10 @@ from keras.layers import Dense
 from keras.layers import Reshape
 from keras.layers import Conv2D
 from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
+from keras.layers import LeakyReLU, ReLU, Activation
 from keras.layers import BatchNormalization
+from keras.layers import Dropout
+from keras.layers import UpSampling2D
 from keras.initializers import  RandomNormal
 from matplotlib import pyplot
 
@@ -16,18 +18,29 @@ from matplotlib import pyplot
 def define_model(dim):
     model = Sequential()
     # foundation for 7x7 image
-    n_nodes = 128 * 7 * 7
+    n_nodes = 256 * 7 * 7
     model.add(Dense(n_nodes, input_dim=dim))
-    model.add(LeakyReLU(alpha = 0.2))
-    model.add(Reshape((7, 7, 128)))
+    model.add(BatchNormalization(momentum=0.9))
+    model.add(ReLU())
+    model.add(Reshape((7, 7, 256)))
+    model.add(Dropout(0.4))
     # upsample to 14x14
-    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same'))
-    model.add(LeakyReLU(alpha = 0.2))
+    model.add(UpSampling2D())
+    model.add(Conv2DTranspose(128, 5, padding='same'))
+    model.add(BatchNormalization(momentum=0.9))
+    model.add(ReLU())
+
+    model.add(UpSampling2D())
+    model.add(Conv2DTranspose(64, 5, padding='same'))
+    model.add(BatchNormalization(momentum=0.9))
+    model.add(ReLU())
     # upsample to 28x28
-    model.add(Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same'))
-    model.add(LeakyReLU(alpha = 0.2))
+    model.add(Conv2DTranspose(32, 5, padding='same'))
+    model.add(BatchNormalization(momentum=0.9))
+    model.add(ReLU())
     #out 28x28x1
-    model.add(Conv2D(1, (7, 7), activation='sigmoid', padding='same'))
+    model.add(Conv2DTranspose(1,5,padding='same'))
+    model.add(Activation('sigmoid'))
     return model
 
 

@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.optimizers import Adam
+from keras.optimizers import RMSprop
 from GAN import generator, discriminator
 
 
@@ -8,7 +8,7 @@ def define_gan(g_model, d_model):
     model = Sequential()
     model.add(g_model)
     model.add(d_model)
-    opt = Adam(lr=0.0002,beta_1=0.5)
+    opt = RMSprop(lr=0.0001,decay=3e-8)
     model.compile(loss='binary_crossentropy',optimizer=opt)
     return model
 
